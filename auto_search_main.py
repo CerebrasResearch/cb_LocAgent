@@ -438,7 +438,7 @@ def run_localize(rank, args, bug_queue, log_queue, output_file_lock, traj_file_l
                         'repo': bug['repo'],
                         'base_commit': bug['base_commit'],
                         'problem_statement': bug['problem_statement'],
-                        'patch': bug['patch'],
+                        'patch': bug.get('patch', None),
                         # 'gt_file_changes': gt_file_changes
                     }
                 }
@@ -463,7 +463,7 @@ def run_localize(rank, args, bug_queue, log_queue, output_file_lock, traj_file_l
                     'repo': bug['repo'],
                     'base_commit': bug['base_commit'],
                     'problem_statement': bug['problem_statement'],
-                    'patch': bug['patch'],
+                    'patch': bug.get('patch', None),
                     # 'gt_file_changes': gt_file_changes
                 }
             }
@@ -483,7 +483,11 @@ def run_localize(rank, args, bug_queue, log_queue, output_file_lock, traj_file_l
 
 
 def localize(args):
-    bench_data = load_dataset(args.dataset, split=args.split)
+    # bench_data = load_dataset(args.dataset, split=args.split)
+    if not args.load_from_json:
+        bench_data = load_dataset(args.dataset, split=args.split)
+    else:
+        bench_data = load_dataset('json', data_files={'test': args.dataset}, split='test')
     bench_tests = filter_dataset(bench_data, 'instance_id', args.used_list)
     if args.eval_n_limit:
         eval_n_limit = min(args.eval_n_limit, len(bench_tests))
@@ -591,18 +595,20 @@ def main():
     parser.add_argument("--output_folder", type=str, required=True)
     parser.add_argument("--output_file", type=str, default="loc_outputs.jsonl")
     parser.add_argument("--merge_file", type=str, default="merged_loc_outputs.jsonl")
+    parser.add_argument('--load_from_json', action='store_true', help='if passed, load_dataset from json')
+
     
     parser.add_argument(
         "--model", type=str,
         default="openai/gpt-4o-2024-05-13",
-        choices=["gpt-4o", 
-                 "azure/gpt-4o", "openai/gpt-4o-2024-05-13",
-                 "deepseek/deepseek-chat", "deepseek-ai/DeepSeek-R1",
-                 "litellm_proxy/claude-3-5-sonnet-20241022", "litellm_proxy/gpt-4o-2024-05-13", "litellm_proxy/o3-mini-2025-01-31",
-                 # fine-tuned model
-                 "openai/qwen-7B", "openai/qwen-7B-128k", "openai/ft-qwen-7B", "openai/ft-qwen-7B-128k",
-                 "openai/qwen-32B", "openai/qwen-32B-128k", "openai/ft-qwen-32B", "openai/ft-qwen-32B-128k",
-        ]
+        # choices=["gpt-4o", 
+        #          "azure/gpt-4o", "openai/gpt-4o-2024-05-13",
+        #          "deepseek/deepseek-chat", "deepseek-ai/DeepSeek-R1",
+        #          "litellm_proxy/claude-3-5-sonnet-20241022", "litellm_proxy/gpt-4o-2024-05-13", "litellm_proxy/o3-mini-2025-01-31",
+        #          # fine-tuned model
+        #          "openai/qwen-7B", "openai/qwen-7B-128k", "openai/ft-qwen-7B", "openai/ft-qwen-7B-128k",
+        #          "openai/qwen-32B", "openai/qwen-32B-128k", "openai/ft-qwen-32B", "openai/ft-qwen-32B-128k",
+        # ]
     )
     parser.add_argument("--use_function_calling", action="store_true",
                         help='Enable function calling features of LLMs. If disabled, codeact will be used to support function calling.')

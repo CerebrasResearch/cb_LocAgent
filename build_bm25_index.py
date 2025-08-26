@@ -73,6 +73,7 @@ if __name__ == '__main__':
                         help='The base directory where the generated graph index will be saved.')
     parser.add_argument('--instance_id_path', type=str, default='', 
                         help='Path to a file containing a list of selected instance IDs.')
+    parser.add_argument('--load_from_json', action='store_true', help='if passed, load_dataset from json')
     args = parser.parse_args()
 
     
@@ -83,7 +84,10 @@ if __name__ == '__main__':
     # load selected repo instance id and instance_data
     if args.download_repo:
         selected_instance_data = {}
-        bench_data = load_dataset(args.dataset, split=args.split)
+        if not args.load_from_json:
+            bench_data = load_dataset(args.dataset, split=args.split)
+        else:
+            bench_data = load_dataset('json', data_files={'test': args.dataset}, split='test')
         if args.instance_id_path and osp.exists(args.instance_id_path):
             with open(args.instance_id_path, 'r') as f:
                 repo_folders = json.loads(f.read())
