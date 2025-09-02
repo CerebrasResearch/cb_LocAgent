@@ -543,7 +543,7 @@ def traverse_tree_structure_for_code_comments(G, root, direction='downstream', h
             else:
                 doc_strings = doc_strings.replace(f'r\"\"\"', '"""').replace(f"r\'\'\'", "'''")
             code_comments_str =  post_def_comments + "\n" + doc_strings
-        return code_comments_str
+        return code_comments_str.strip()
 
     def traverse(node, prefix, is_last, level, edge_type, edirection):
         if level > hops:
@@ -611,11 +611,12 @@ def traverse_tree_structure_for_code_comments(G, root, direction='downstream', h
         node_code = G.nodes[node]['code']
         node_comments_dict = extract_code_comments(node_code) if len(node_code.strip()) > 0 else None
         rtn_comments_str.append(_parse_code_comments_to_str(node_comments_dict, G.nodes[node]["type"], node))
-        for i, (neigh_id, etype, edir) in enumerate(zip(neigh_ids, etypes, edirs)):
-            is_last_child = (i == len(neigh_ids) - 1)
-            if edir == 'upstream':
-                etype += '-by'
-            rtn_child_str[-1].append(f"{etype} {neigh_id}")
+        if level < hops-1 :
+            for i, (neigh_id, etype, edir) in enumerate(zip(neigh_ids, etypes, edirs)):
+                is_last_child = (i == len(neigh_ids) - 1)
+                if edir == 'upstream':
+                    etype += '-by'
+                rtn_child_str[-1].append(f"{etype} {neigh_id}")
 
         for i, (neigh_id, etype, edir) in enumerate(zip(neigh_ids, etypes, edirs)):
             is_last_child = (i == len(neigh_ids) - 1)
@@ -625,8 +626,14 @@ def traverse_tree_structure_for_code_comments(G, root, direction='downstream', h
 
     traverse(root, '', False, 0, None, None)
 
+    final_comment_str = []
+    for edge_list, code_comment in zip(rtn_child_str, rtn_comments_str):
+        edge_str = "\n    ".join(edge_list)
+        if code_comment:
+            edge_str += f"\n{code_comment}"
+        if len(edge_list) > 1 or code_comment:
+            final_comment_str.append(edge_str)
 
-    return "\n".join(rtn_str), "\n============\n".join(["\n    ".join(x) + "\n" + f"{code_comment}" for x, code_comment in zip(rtn_child_str, rtn_comments_str)])
-
+    return "\n".join(rtn_str), "\n=============================\n".join(final_comment_str)
 
 
