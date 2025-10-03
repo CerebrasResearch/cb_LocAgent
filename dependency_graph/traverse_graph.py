@@ -611,7 +611,7 @@ def traverse_tree_structure_for_code_comments(G, root, direction='downstream', h
         node_code = G.nodes[node]['code']
         node_comments_dict = extract_code_comments(node_code) if len(node_code.strip()) > 0 else None
         rtn_comments_str.append(_parse_code_comments_to_str(node_comments_dict, G.nodes[node]["type"], node))
-        if level < hops-1 :
+        if level < hops :
             for i, (neigh_id, etype, edir) in enumerate(zip(neigh_ids, etypes, edirs)):
                 is_last_child = (i == len(neigh_ids) - 1)
                 if edir == 'upstream':

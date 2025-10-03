@@ -7,6 +7,19 @@ Title: {title}
 
 """
 
+PR_TEMPLATE_INFO = """
+--- BEGIN PROBLEM STATEMENT ---
+Title: {title}
+
+{description}
+
+{git_info}
+
+--- END PROBLEM STATEMENT ---
+
+
+"""
+
 
 SYSTEM_PROMPT="""You're an experienced software tester and static analysis expert. 
 Given the problem offered by the user, please perform a thorough static analysis and to localize the bug in this repository using the available tools.

@@ -19,7 +19,7 @@ _tree_args = [
     #     "traversal_depth": -1,
     #     "entity_type_filter": ["directory"],  # 'class', 'function', 'file', 'directory')
     #     "dependency_type_filter": ["imports", "invokes", "inherits", "contains"],  # 'contains', 'imports', 'invokes', 'inherits'
-    #     "output_path": "/mlf11-shared/coding/aarti/cb_LocAgent/scripts/get_outputs_directory_downstream.txt"
+    #     "output_path": "/mlf11-shared/coding/aarti/cb_LocAgent/scripts/logs/get_outputs_directory_downstream.txt"
     # },
     # {
     #     "start_entities": ["src/cerebras/modelzoo/models"],
@@ -27,7 +27,7 @@ _tree_args = [
     #     "traversal_depth": -1,
     #     "entity_type_filter": ["directory"],  # 'class', 'function', 'file', 'directory')
     #     "dependency_type_filter": ["imports", "invokes", "inherits", "contains"],  # 'contains', 'imports', 'invokes', 'inherits'
-    #     "output_path": "/mlf11-shared/coding/aarti/cb_LocAgent/scripts/get_outputs_directory_upstream.txt"
+    #     "output_path": "/mlf11-shared/coding/aarti/cb_LocAgent/scripts/logs/get_outputs_directory_upstream.txt"
     # },
     # {
     #     "start_entities": ["src/cerebras/modelzoo/models"],
@@ -35,7 +35,7 @@ _tree_args = [
     #     "traversal_depth": -1,
     #     "entity_type_filter": ["directory", "file"],  # 'class', 'function', 'file', 'directory')
     #     "dependency_type_filter": ["imports", "invokes", "inherits", "contains"],  # 'contains', 'imports', 'invokes', 'inherits'
-    #     "output_path": "/mlf11-shared/coding/aarti/cb_LocAgent/scripts/get_outputs_file_downstream.txt"
+    #     "output_path": "/mlf11-shared/coding/aarti/cb_LocAgent/scripts/logs/get_outputs_file_downstream.txt"
     # },
     # {
     #     "start_entities": ["src/cerebras/modelzoo/models"],
@@ -43,7 +43,7 @@ _tree_args = [
     #     "traversal_depth": -1,
     #     "entity_type_filter": ["directory", "file"],  # 'class', 'function', 'file', 'directory')
     #     "dependency_type_filter": ["imports", "invokes", "inherits", "contains"],  # 'contains', 'imports', 'invokes', 'inherits'
-    #     "output_path": "/mlf11-shared/coding/aarti/cb_LocAgent/scripts/get_outputs_file_upstream.txt"
+    #     "output_path": "/mlf11-shared/coding/aarti/cb_LocAgent/scripts/logs/get_outputs_file_upstream.txt"
     # },
     # {
     #     "start_entities": ["src/cerebras/modelzoo/models/vision/vision_transformer/ViTModel.py"],
@@ -51,17 +51,24 @@ _tree_args = [
     #     "traversal_depth": -1,
     #     "entity_type_filter": ["directory", "file", "class", "function"],  # 'class', 'function', 'file', 'directory')
     #     "dependency_type_filter": ["imports", "invokes", "inherits", "contains"],  # 'contains', 'imports', 'invokes', 'inherits'
-    #     "output_path": "/mlf11-shared/coding/aarti/cb_LocAgent/scripts/get_outputs_ViT.txt"
+    #     "output_path": "/mlf11-shared/coding/aarti/cb_LocAgent/scripts/logs/get_outputs_ViT.txt"
+    # },
+    # {
+    #     "start_entities": ["src/cerebras/modelzoo/models/vision/vision_transformer/ViTModel.py"],
+    #     "direction": "downstream",
+    #     "traversal_depth": 2,
+    #     "entity_type_filter": ["directory", "file", "class", "function"],  # 'class', 'function', 'file', 'directory')
+    #     "dependency_type_filter": ["imports", "invokes", "inherits", "contains"],  # 'contains', 'imports', 'invokes', 'inherits'
+    #     "output_path": "/mlf11-shared/coding/aarti/cb_LocAgent/scripts/logs/get_outputs_ViT_depth2.txt"
     # },
     {
         "start_entities": ["src/cerebras/modelzoo/models/vision/vision_transformer/ViTModel.py"],
         "direction": "downstream",
         "traversal_depth": 2,
         "entity_type_filter": ["directory", "file", "class", "function"],  # 'class', 'function', 'file', 'directory')
-        "dependency_type_filter": ["imports", "invokes", "inherits", "contains"],  # 'contains', 'imports', 'invokes', 'inherits'
-        "output_path": "/mlf11-shared/coding/aarti/cb_LocAgent/scripts/get_outputs_ViT_depth2.txt"
+        "dependency_type_filter": ["contains"],  # 'contains', 'imports', 'invokes', 'inherits'
+        "output_path": "/mlf11-shared/coding/aarti/cb_LocAgent/scripts/logs/get_outputs_ViT_depth2_contains_noempty.txt"
     },
-    
 ]
 
 for bug in bench_data:

@@ -32,7 +32,9 @@ from plugins import LocationToolsRequirement
 from plugins.location_tools.repo_ops.repo_ops import (
     set_current_issue,
     reset_current_issue,
+    get_repo_save_dir
 )
+from plugins.location_tools.repo_ops import show_all_commits
 import litellm
 from litellm import Message as LiteLLMMessage
 from openai import APITimeoutError
@@ -89,13 +91,37 @@ def get_task_instruction(instance: dict, task: str = 'auto_search', include_pr=F
 
     instruction += task_description
         
+    # if include_pr:
+    #     problem_statement = instance['problem_statement']
+    #     instruction += general_prompt.PR_TEMPLATE.format(
+    #         title=problem_statement.strip().split('\n')[0],
+    #         description = '\n'.join(problem_statement.strip().split('\n')[1:]).strip()
+    #     )
+
     if include_pr:
         problem_statement = instance['problem_statement']
-        instruction += general_prompt.PR_TEMPLATE.format(
-            title=problem_statement.strip().split('\n')[0],
-            description = '\n'.join(problem_statement.strip().split('\n')[1:]).strip()
-        )
-    
+        
+        repo_save_path = get_repo_save_dir()
+        repo_dir = os.path.join(os.path.dirname(__file__),repo_save_path, instance['repo'].replace("/", "_"))
+        pr_info = show_all_commits(repo_dir)
+
+        if pr_info is not None and len(pr_info) > 0:
+            git_info = "Here are the previous commits in this repo with modified, deleted and added file names: \n"
+
+            for commit_id, commit_message in pr_info.items():
+                git_info += f"{commit_message}\n"
+        
+            instruction += general_prompt.PR_TEMPLATE_INFO.format(
+                title=problem_statement.strip().split('\n')[0],
+                description = '\n'.join(problem_statement.strip().split('\n')[1:]).strip(),
+                git_info = git_info.strip()
+            )
+        else:
+            instruction += general_prompt.PR_TEMPLATE.format(
+                title=problem_statement.strip().split('\n')[0],
+                description = '\n'.join(problem_statement.strip().split('\n')[1:]).strip(),
+            )
+
     if output_format:
         instruction += output_format
     
